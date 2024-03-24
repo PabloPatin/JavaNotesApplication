@@ -1,70 +1,80 @@
 package com.app.notes;
 
-import org.springframework.data.repository.query.Param;
+import com.app.tags.Tag;
+import com.app.tags.TagService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequestMapping("/api/v1/notes")
 @RestController
 public class NotesController {
-    private NotesRepository repository;
+    private NotesService notesService;
+    private TagService tagService;
 
-    public NotesController(NotesRepository repository) {
-        this.repository = repository;
+    public NotesController(NotesService notesService, TagService tagService) {
+        this.notesService = notesService;
+        this.tagService = tagService;
     }
 
-    @GetMapping(params = {})
+    @GetMapping
     public List<Note> getAllNotes() {
-        return repository.findAll();
+        return notesService.getAllNotes();
+    }
+
+    @GetMapping(path = "{noteId}")
+    public Note getNote(@PathVariable int noteId) {
+        return notesService.getNoteById(noteId);
     }
 
     @GetMapping(params = {"find_by", "value"})
-    private Note getNoteByTitle(@RequestParam String find_by, @RequestParam String value){
+    public List<Note> getNotesBy(@RequestParam String find_by, @RequestParam String value){
         if (find_by.equals("title")) {
-            return repository.findByTitle(value).get(0);
+            return notesService.getNotesByTitle(value);
         }else if (find_by.equals("id")){
-            int noteId = Integer.parseInt(value);
-            Optional<Note> note = repository.findById(noteId);
-            return note.orElse(null);
+            return List.of(notesService.getNoteById(Integer.parseInt(value)));
         }
-        else return null;
-    }
-
-    @GetMapping(params = {"find_all_by", "value"})
-    private List<Note> getNotesByTitle(@RequestParam String find_by, @RequestParam String value){
-        if (find_by.equals("title")) {
-            return repository.findByTitle(value);
-        }
-        else return null;
+        else throw new IllegalArgumentException(value + "is not valid argument");
     }
 
     @PostMapping
-    private void addNote(@RequestBody Note note) {
-        repository.save(note);
+    public ResponseEntity<?> addNote(@RequestBody NoteTemplate tempNote) {
+        Note note = new Note();
+        note.setTitle(tempNote.title());
+        note.setText(tempNote.text());
+        Set<Tag> tags = tempNote.tags().stream()
+                .map(tagName -> tagService.findOrCreateTag(tagName))
+                .collect(Collectors.toSet());
+        note.setTags(tags);
+        return notesService.saveNote(note);
     }
 
     @PutMapping(path = "{noteId}")
-    private void updateNote(@RequestBody Note updatedNote, @PathVariable int noteId) {
-        Note existingNote = repository
-                .findById(noteId)
-                .orElseThrow(() -> new IllegalArgumentException("Note not found with id " + noteId));
-        existingNote.setText(updatedNote.getText());
-        existingNote.setTitle(updatedNote.getTitle());
-        repository.save(existingNote);
+    public ResponseEntity<?> updateNote(@RequestBody NoteTemplate tempNote, @PathVariable int noteId) {
+        Note existingNote = notesService.getNoteById(noteId);
+        if (tempNote.title()!=null)
+            existingNote.setTitle(tempNote.title());
+        if (tempNote.text()!=null)
+            existingNote.setText(tempNote.text());
+        if (tempNote.tags()!=null){
+        Set<Tag> tags = tempNote.tags().stream()
+                .map(tagName -> tagService.findOrCreateTag(tagName))
+                .collect(Collectors.toSet());
+        existingNote.setTags(tags);
+        }
+        return notesService.saveNote(existingNote);
     }
 
     @DeleteMapping(path = "{noteId}")
-    private void deleteNote(@PathVariable int noteId){
-        Note note = repository
-                .findById(noteId)
-                .orElseThrow(() -> new IllegalArgumentException("Note not found with id " + noteId));
-        repository.delete(note);
+    public void deleteNote(@PathVariable int noteId){
+        notesService.deleteNote(noteId);
     }
 
     @DeleteMapping
-    private void deleteAllNotes(){
-        repository.deleteAll();
+    public void deleteAllNotes(){
+        notesService.deleteAllNotes();
     }
 }

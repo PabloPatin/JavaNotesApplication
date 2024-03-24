@@ -1,5 +1,6 @@
 package com.app.notes;
 
+import com.app.tags.Tag;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import org.hibernate.grammars.hql.HqlParser;
 
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Note {
@@ -32,21 +34,11 @@ public class Note {
     @Column(nullable = false, columnDefinition = "timestamp")
     private String lastUpdateTime;
 
-    public String getCreationDateTime() {
-        return creationTime;
-    }
-
-    public void setCreationDateTime(String creationDateTime) {
-        this.creationTime = creationDateTime;
-    }
-
-    public String getLastUpdateDateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateDateTime(String lastUpdateDateTime) {
-        this.lastUpdateTime = lastUpdateDateTime;
-    }
+    @ManyToMany
+    @JoinTable(name = "notes_tags",
+            joinColumns = @JoinColumn(name = "note_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_name"))
+    private Set<Tag> tags;
 
     public String getText() {
         return text;
@@ -72,4 +64,27 @@ public class Note {
         this.title = title;
     }
 
+    public String getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(String creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public String getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(String lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
 }
