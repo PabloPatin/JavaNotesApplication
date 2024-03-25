@@ -87,4 +87,16 @@ public class Note {
     public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
+
+    @Override
+    public String toString() {
+        return "Note{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", text='" + text + '\'' +
+                ", creationTime='" + creationTime + '\'' +
+                ", lastUpdateTime='" + lastUpdateTime + '\'' +
+                ", tags=" + tags +
+                '}';
+    }
 }

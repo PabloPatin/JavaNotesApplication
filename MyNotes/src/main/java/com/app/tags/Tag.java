@@ -3,7 +3,7 @@ package com.app.tags;
 import jakarta.persistence.*;
 
 @Entity
-@Table(indexes = @Index(name = "id", columnList = "name"))
+@Table(indexes = @Index(name = "tag_id", columnList = "name"))
 public class Tag {
     @Id
     @Column(nullable = false, updatable = false, unique = true)
