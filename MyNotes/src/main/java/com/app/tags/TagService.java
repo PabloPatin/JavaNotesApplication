@@ -1,9 +1,12 @@
 package com.app.tags;
 
+import com.app.notes.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class TagService {
@@ -22,12 +25,13 @@ public class TagService {
         repository.save(tag);
     }
 
-    public Tag findOrCreateTag(String name){
-        Tag tag = repository.findByName(name);
-        if (tag==null){
-            tag = new Tag(name);
+    public void findOrCreateTag(Tag tag){
+        System.out.println(tag);
+        if (repository.findByName(tag.getName())==null)
             repository.save(tag);
-        }
-        return tag;
+    }
+
+    public void checkTags(Set<Tag> tags){
+        tags.forEach(this::findOrCreateTag);
     }
 }

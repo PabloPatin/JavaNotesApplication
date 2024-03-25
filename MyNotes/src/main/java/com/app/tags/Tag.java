@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Tag {
     @Id
     @Column(nullable = false, updatable = false, unique = true)
-    String name;
+    private String name;
 
     public Tag() {
     }

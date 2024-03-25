@@ -44,4 +44,12 @@ public class NotesService {
     public void deleteAllNotes(){
         repository.deleteAll();
     }
+
+    public List<Note> getTaggedNotes(String tagName){
+        return repository.findByTagName(tagName);
+    }
+
+    public List<Note> getUntaggedNotes(){
+        return repository.findUntagged();
+    }
 }
