@@ -1,5 +1,6 @@
 package com.app.notes;
 
+import com.app.exceptions.BadRequestException;
 import com.app.utils.NoteMerger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class NotesController {
         }else if (find_by.equals("id")){
             return List.of(service.getNoteById(Integer.parseInt(value)));
         }
-        else throw new IllegalArgumentException(value + "is not valid argument");
+        else throw new BadRequestException("find_by=" + find_by + " is not valid argument");
     }
 
     @PostMapping

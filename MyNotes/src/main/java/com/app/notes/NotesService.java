@@ -1,9 +1,14 @@
 package com.app.notes;
 
+import com.app.exceptions.BadRequestException;
+import com.app.exceptions.NotFoundException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +31,12 @@ public class NotesService {
 
     public Note getNoteById(int id){
         Optional<Note> note = repository.findById(id);
-        return note.orElseThrow(() -> new IllegalArgumentException("Note not found with id " + id));
+        return note.orElseThrow(() -> new NotFoundException("Note with id " + id + " not exists"));
     }
 
     public ResponseEntity<?> saveNote(Note note) {
         repository.save(note);
-        return ResponseEntity.ok(note);
+        return ResponseEntity.status(201).body(note);
     }
 
     public void deleteNote(int noteId){

@@ -1,4 +1,4 @@
-package com.app;
+package com.app.configs;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;

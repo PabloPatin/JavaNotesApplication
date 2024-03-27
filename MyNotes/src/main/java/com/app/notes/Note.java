@@ -1,5 +1,6 @@
 package com.app.notes;
 
+import com.app.exceptions.BadRequestException;
 import com.app.tags.Tag;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
