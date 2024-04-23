@@ -2,6 +2,7 @@ package com.app.notes;
 
 import com.app.exceptions.BadRequestException;
 import com.app.tags.Tag;
+import com.app.users.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +19,19 @@ public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @ManyToOne(
+            fetch = FetchType.EAGER
+    )
+
+    @JoinColumn(
+            name = "notes",
+            referencedColumnName = "id",
+            foreignKey = @ForeignKey(
+                    name = "owner"
+            )
+    )
+    private User owner;
 
     @NotNull
     private String title;
@@ -89,10 +103,19 @@ public class Note {
         this.tags = tags;
     }
 
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
                 "id=" + id +
+                ", owner=" + owner +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", creationTime='" + creationTime + '\'' +

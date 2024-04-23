@@ -1,7 +1,10 @@
 package com.app.users;
 
+import com.app.notes.Note;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+
+import java.util.List;
 
 @Entity
 @Table(name = "\"user\"")
@@ -20,9 +23,11 @@ public class User{
     @Column(nullable = false, unique = true)
     private String password_hash;
 
-    @ManyToOne
-    @JoinColumn(name = "group_name")
-    private UserGroup group;
+    @OneToMany(
+            mappedBy = "owner",
+            fetch = FetchType.EAGER
+    )
+    private List<Note> notes;
 
     @Override
     public String toString() {
@@ -31,7 +36,6 @@ public class User{
                 ", login='" + login + '\'' +
                 ", email='" + email + '\'' +
                 ", password_hash=" + password_hash +
-                ", group=" + group +
                 '}';
     }
 
@@ -65,5 +69,13 @@ public class User{
 
     public void setPassword_hash(String  password_hash) {
         this.password_hash = password_hash;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 }

@@ -21,10 +21,13 @@ public class UserController {
         return service.getAllUsers();
     }
 
-//  TODO: переделать + назначение в группу
+    @GetMapping(path = "{login}")
+    private User getUser(@PathVariable String login){
+        return service.getUserByName(login);
+    }
+
     @PostMapping
     private ResponseEntity<?> addUser(@RequestBody User user){
-        System.out.println(user);
         return service.createUser(user);
     }
 

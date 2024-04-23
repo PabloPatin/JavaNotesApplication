@@ -8,4 +8,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying
     @Query("DELETE FROM User u WHERE u.login= :name")
     void deleteUserByLogin(String name);
+
+    User findByLogin(String username);
 }

@@ -40,6 +40,7 @@ public class NotesController {
         else throw new BadRequestException("find_by=" + find_by + " is not valid argument");
     }
 
+    // TODO add owner
     @PostMapping
     public ResponseEntity<?> addNote(@RequestBody Note tempNote) {
         Note note = new Note();
