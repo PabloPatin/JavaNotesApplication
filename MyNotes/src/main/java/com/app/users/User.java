@@ -1,8 +1,10 @@
 package com.app.users;
 
 import com.app.notes.Note;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -27,7 +29,11 @@ public class User{
             mappedBy = "owner",
             fetch = FetchType.EAGER
     )
+    @JsonBackReference
     private List<Note> notes;
+
+    @NotNull
+    private Boolean isAdmin;
 
     @Override
     public String toString() {
@@ -77,5 +83,17 @@ public class User{
 
     public void setNotes(List<Note> notes) {
         this.notes = notes;
+    }
+
+    public Boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
+
+    public void addNote(Note note){
+        this.notes.add(note);
     }
 }

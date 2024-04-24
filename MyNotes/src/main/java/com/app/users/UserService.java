@@ -1,5 +1,6 @@
 package com.app.users;
 
+import com.app.notes.Note;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +33,11 @@ public class UserService {
 
     public User getUserByName(String name) {
         return repository.findByLogin(name);
+    }
+
+    public void addNote(String user, Note note){
+        User updated_user = this.getUserByName(user);
+        updated_user.addNote(note);
+        repository.save(updated_user);
     }
 }

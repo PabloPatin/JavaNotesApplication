@@ -3,6 +3,7 @@ package com.app.notes;
 import com.app.exceptions.BadRequestException;
 import com.app.tags.Tag;
 import com.app.users.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -20,10 +21,8 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(
-            fetch = FetchType.EAGER
-    )
 
+    @ManyToOne
     @JoinColumn(
             name = "notes",
             referencedColumnName = "id",
@@ -49,7 +48,8 @@ public class Note {
     @Column(nullable = false, columnDefinition = "timestamp")
     private String lastUpdateTime;
 
-    @ManyToMany
+    @ManyToMany(
+    )
     @JoinTable(name = "notes_tags",
             joinColumns = @JoinColumn(name = "note_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_name"))
